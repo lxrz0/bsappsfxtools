@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="public/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="public/main.css">
+    <script src="public/vue/dist/vue.min.js"></script>
+    <title>Mastermind Tools</title>
+</head>
+<body>
+    <div id="wrapper" class='bg-light'>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-9">
+                    <div id="content" class='bg-white border rounded p-0'>
+                        <!-- Logo -->
+                        <div id='logo-container'>
+                            <img src="public/logo.png" alt="">
+                        </div>
+            
+                        <div id='calc-container' class='p-3'>
+                            <table class="table">
+                                <thead class='thead-dark'>
+                                    <tr>
+                                        <td></td>
+                                        <td>Total Pips</td>
+                                        <td>% Taken Off</td>
+                                        <td>Lots taken off</td>
+                                        <td>$ Secured</td>
+                                        <td>% Gain on account</td>
+                                        <td>Cumulative % Gain</td>
+                                    </tr>
+                                </thead>
+            
+                                <tbody>
+                                    <tr>
+                                        <td>TP 1</td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model='pips1'>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model='tp1'>
+                                        </td>
+                                        <td>{{ (lotSize * (tp1/100)).toFixed(3)}}</td>
+                                        <td>${{ ((pipValue * pips1) * (tp1 / 100)).toFixed(2) }}</td>
+                                        <td>{{ gainOnAccount(pips1, tp1) }}%</td>
+                                        <td>{{cumulative1}}%</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>TP 2</td>
+                                        <!-- <td>{{((tp2/100) * target).toFixed(3)}}</td> -->
+                                        <td>
+                                            <input type="text" class="form-control" v-model='pips2'>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model='tp2'>
+                                        </td>
+                                        <td>{{ (lotSize * (tp2/100)).toFixed(3)}}</td>
+                                        <td>${{ ((pipValue * pips2) * (tp2 / 100)).toFixed(2) }}</td>
+                                        <td>{{ gainOnAccount(pips2, tp2) }}%</td>
+                                        <td>{{cumulative2}}%</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>TP 3</td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model='pips3'>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model='tp3'>
+                                        </td>
+                                        <td>{{ (lotSize * (tp3/100)).toFixed(3)}}</td>
+                                        <td>${{ ((pipValue * pips3) * (tp3 / 100)).toFixed(2) }}</td>
+                                        <td>{{ gainOnAccount(pips3, tp3) }}%</td>
+                                        <td>{{cumulative3}}%</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>TP 4</td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model='pips4'>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" v-model='tp4'>
+                                        </td>
+                                        <td>{{ (lotSize * (tp4/100)).toFixed(3)}}</td>
+                                        <td>${{ ((pipValue * pips4) * (tp4 / 100)).toFixed(2) }}</td>
+                                        <td>{{ gainOnAccount(pips4, tp4) }}%</td>
+                                        <td>{{cumulative4}}%</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Total</td>
+                                        <td>{{totalPips}}</td>
+                                        <td>{{ Number(tp1) + Number(tp2) + Number(tp3) + Number(tp4) }}%</td>
+                                        <td>{{totalLots}}</td>
+                                        <td>${{dollarsSecured}}</td>
+                                        <td>{{cumulative4}}%</td>
+                                        <td>{{cumulative4}}%</td>
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+                            <div v-if='err'>
+                                <p class="font-weight-bold mb-0">U Spastic ⚠️</p>
+                                <p class="small">Percentage taken off is greater than 100%</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <p class="small mb-0 text-secondary py-2">
+                        Expanded from Aqils spreadsheet <br>
+                    </p>
+                </div>
+
+                <!-- Col next -->
+                <div class="col-md-3">
+
+                    <div class='bg-white border rounded p-3'>
+                        <div class="form-group">
+                            <label>Account Size</label>
+                            <input type="text" class="form-control" v-model='accountSize'>
+                        </div>
+                        <div class="form-group">
+                            <label>Risk (%)</label>
+                            <input type="text" class="form-control" v-model='risk'>
+                        </div>
+                        <div class="form-group">
+                            <label>Target (pips)</label>
+                            <input type="text" class="form-control" v-model='target'>
+                        </div>
+                        <div class="form-group">
+                            <label>SL (pips)</label>
+                            <input type="text" class="form-control" v-model='sl'>
+                        </div>
+                        <div class="form-group">
+                            <label>Lot Size</label>
+                            <input type="text" class="form-control" v-model='lotSize'>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between form-group">
+                            <p class="mb-0">RR</p>
+                            <p class="mb-0 font-weight-bold">{{ (target/sl).toFixed(3) }}</p>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between form-group">
+                            <p class="mb-0">Pip Value</p>
+                            <p class="mb-0 font-weight-bold">USD {{  ((accountSize * (risk/100)) / sl).toFixed(2)  }}</p>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex align-items-center justify-content-between form-group">
+                            <p class="mb-0">Total Risk</p>
+                            <p class="mb-0 font-weight-bold text-secondary">USD {{  (accountSize * (risk/100)).toFixed(2)  }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    new Vue({
+        el: '#wrapper',
+        data () {return {
+            accountSize: 100000,
+            size: 100000,
+            risk: 1,
+            target: 100, 
+            sl: 35, 
+            lotSize: "", 
+
+            // Targets
+            tp1: "", 
+            tp2: "", 
+            tp3: "", 
+            tp4: "", 
+
+            pips1: "", 
+            pips2: "", 
+            pips3: "", 
+            pips4: "", 
+        }},
+
+        computed: {
+            cumulative1 () {
+                return this.gainOnAccount(this.pips1, this.tp1);
+            },
+
+            cumulative2 () {
+                return (
+                    Number(this.cumulative1) + 
+                    Number(this.gainOnAccount(this.pips2, this.tp2))
+                ).toFixed(3)
+            },
+
+            cumulative3 () {
+                return (
+                    Number(this.cumulative2) + 
+                    Number(this.gainOnAccount(this.pips3, this.tp3))
+                ).toFixed(3)
+            },
+
+            cumulative4 () {
+                return (
+                    Number(this.cumulative3) + 
+                    Number(this.gainOnAccount(this.pips4, this.tp4))
+                ).toFixed(3)
+            },
+
+            pipValue () {
+                return ((this.accountSize * (this.risk/100)) / this.sl).toFixed(2)
+            },
+
+            totalPips () {
+                return (
+                    Number(this.pips1) + 
+                    Number(this.pips2) +
+                    Number(this.pips3) + 
+                    Number(this.pips4)
+                ).toFixed(3)
+            },
+
+            totalLots () {
+                return (
+                    (this.accountSize / this.sl) / 1000 * (this.tp1/100) +
+                    (this.accountSize / this.sl) / 1000 * (this.tp2/100) +
+                    (this.accountSize / this.sl) / 1000 * (this.tp3/100) +
+                    (this.accountSize / this.sl) / 1000 * (this.tp4/100) 
+                ).toFixed(2)
+            },
+
+            dollarsSecured () {
+                return (
+                    (this.tp1/100 * this.target) * ((this.accountSize * (this.risk/100)) / this.sl) + 
+                    (this.tp2/100 * this.target) * ((this.accountSize * (this.risk/100)) / this.sl) + 
+                    (this.tp3/100 * this.target) * ((this.accountSize * (this.risk/100)) / this.sl) + 
+                    (this.tp4/100 * this.target) * ((this.accountSize * (this.risk/100)) / this.sl) 
+                ).toFixed(2);
+            },
+
+            percentageGain () {},
+
+            percentLeftRunning () {
+                return 100 - (Number(this.tp1) + Number(this.tp2) + Number(this.tp3) + Number(this.tp4))
+            },
+
+            err () {
+                if (Number(this.tp1) + Number(this.tp2) + Number(this.tp3) + Number(this.tp4) > 100) {return true} 
+                return false;
+            }
+        },
+
+        methods: {
+            gainOnAccount (pips, percent) {
+                if (pips == "") {return (0).toFixed(3)}
+                return ((((this.pipValue * pips) / this.accountSize) * (percent/ 100)) * 100).toFixed(3)
+            }
+        }
+    })
+</script>

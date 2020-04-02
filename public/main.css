@@ -1,0 +1,24 @@
+#wrapper {
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#wrapper #logo-container {
+  background-color: black;
+  padding: 10px;
+  text-align: center;
+}
+
+#wrapper #logo-container img {
+  width: 100px;
+  height: auto;
+}
+/*# sourceMappingURL=main.css.map */
